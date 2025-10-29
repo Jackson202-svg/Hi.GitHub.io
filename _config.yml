@@ -1,0 +1,12 @@
+title: Jackson's Portfolio
+description: My personal website built with HTML, CSS, JS
+url: "https://jackson.github.io"
+author: Jackson
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+markdown: kramdown
+show_excerpts: true
+paginate: 5
+timezone: UTC
