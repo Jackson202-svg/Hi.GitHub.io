@@ -14,12 +14,10 @@ section { margin-bottom:40px; }
 button { background:#0078ff; color:white; border:none; padding:10px 20px; cursor:pointer; border-radius:5px; margin:5px; }
 button:hover { background:#005fc0; }
 footer { background:#0078ff; color:white; text-align:center; padding:10px; position:fixed; bottom:0; width:100%; }
-.hidden { display:none; }
 ul.project-list { list-style:none; padding:0; }
 ul.project-list li { background:white; margin:10px 0; padding:15px; border-radius:6px; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
 #fps-counter { position:fixed; top:5px; right:10px; background:rgba(0,0,0,0.7); color:#0f0; font-family:monospace; font-size:14px; padding:5px 10px; border-radius:5px; z-index:9999; }
 #server-data { margin-top:20px; font-size:16px; font-weight:bold; }
-#login-status { margin-top:10px; font-weight:bold; color: #222; }
 </style>
 </head>
 <body>
@@ -30,17 +28,20 @@ ul.project-list li { background:white; margin:10px 0; padding:15px; border-radiu
   <a href="#" onclick="showPage('projects')">Projects</a>
   <a href="#" onclick="showPage('about')">About</a>
   <a href="#" onclick="showPage('contact')">Contact</a>
-  <a href="#" onclick="showPage('login')">Login</a>
+  <a href="/logout">Logout</a>
 </nav>
 </header>
+
 <div id="fps-counter">FPS: 0</div>
+
 <main>
 <section id="home">
   <h2>Hello!</h2>
-  <p>Welcome to my personal website hosted on GitHub Pages. I share my projects, code, and experiments here.</p>
+  <p>Welcome! You are logged in and can view server data.</p>
   <div id="server-data">Loading server data...</div>
 </section>
-<section id="projects" class="hidden">
+
+<section id="projects">
   <h2>My Projects</h2>
   <ul class="project-list">
     <li><strong>Cookie Clicker Clone</strong> — HTML, CSS & JS game</li>
@@ -48,48 +49,42 @@ ul.project-list li { background:white; margin:10px 0; padding:15px; border-radiu
     <li><strong>Farm Simulator Helper</strong> — FS22 tools</li>
   </ul>
 </section>
-<section id="about" class="hidden">
+
+<section id="about">
   <h2>About Me</h2>
   <p>Hi! I'm Jackson — a web developer who enjoys building websites, coding games, and sharing ideas online.</p>
 </section>
-<section id="contact" class="hidden">
+
+<section id="contact">
   <h2>Contact Me</h2>
   <ul style="list-style:none; padding:0;">
     <li>Email: <a href="mailto:yourname@example.com">yourname@example.com</a></li>
     <li>GitHub: <a href="https://github.com/jackson" target="_blank">@jackson</a></li>
   </ul>
-  <button onclick="sayThanks()">Say Hi 👋</button>
-</section>
-<section id="login" class="hidden">
-  <h2>Login</h2>
-  <p>Login using your favorite provider:</p>
-  <button onclick="login('google')">Login with Google</button>
-  <button onclick="login('microsoft')">Login with Microsoft</button>
-  <button onclick="login('apple')">Login with Apple</button>
-  <p id="login-status"></p>
 </section>
 </main>
+
 <footer>
 <p>© 2025 Jackson | Built with 💻 HTML, CSS, JS, Python</p>
 </footer>
+
 <script>
 function showPage(pageId){
-  document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
-  document.getElementById(pageId).classList.remove("hidden");
+  document.querySelectorAll("section").forEach(s=>s.style.display="none");
+  document.getElementById(pageId).style.display="block";
   window.scrollTo({top:0, behavior:"smooth"});
 }
-function sayThanks(){ alert("Thanks for visiting!"); }
-let lastTime = performance.now(), frame=0, fps=0;
+
+// FPS counter
+let lastTime=performance.now(), frame=0, fps=0;
 function updateFPS(){
-  frame++;
-  const now = performance.now();
-  if(now - lastTime >= 1000){
-    fps = frame; frame=0; lastTime=now;
-    document.getElementById('fps-counter').innerText = 'FPS: '+fps;
-  }
+  frame++; const now=performance.now();
+  if(now-lastTime>=1000){ fps=frame; frame=0; lastTime=now; document.getElementById('fps-counter').innerText='FPS: '+fps; }
   requestAnimationFrame(updateFPS);
 }
 requestAnimationFrame(updateFPS);
+
+// Fetch server data
 async function fetchServerData(){
   try{
     const response = await fetch('/data');
@@ -97,27 +92,11 @@ async function fetchServerData(){
     document.getElementById('server-data').innerText =
       `Server Status: ${data.server_status} | Players Online: ${data.player_count}`;
   }catch(e){
-    document.getElementById('server-data').innerText = 'Server data unavailable';
+    document.getElementById('server-data').innerText='Server data unavailable';
   }
 }
-setInterval(fetchServerData, 1000);
+setInterval(fetchServerData,1000);
 fetchServerData();
-async function login(provider){
-  let email = prompt(`Enter your email to login with ${provider.charAt(0).toUpperCase() + provider.slice(1)}:`);
-  if(!email) return;
-  try{
-    const response = await fetch(`/login/${provider}`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({email})
-    });
-    const result = await response.json();
-    document.getElementById('login-status').innerText =
-      `Logged in via ${result.provider} as ${result.email}`;
-  }catch(e){
-    document.getElementById('login-status').innerText = 'Login failed';
-  }
-}
 </script>
 </body>
 </html>
