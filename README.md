@@ -2,7 +2,7 @@
 
 This is my personal website with FPS counter, server data, and login (Google, Microsoft, Apple).
 
-- **Live site:** [https://jackson.github.io](https://jackson.github.io)
+- **Live site:** [https://jackson.github.io]([https://jackson.github.io](https://jackson202-svg.github.io/Hi.GitHub.io/)
 - **Tech stack:** HTML, CSS, JS, Python (Flask for backend)
 
 ### Run locally
